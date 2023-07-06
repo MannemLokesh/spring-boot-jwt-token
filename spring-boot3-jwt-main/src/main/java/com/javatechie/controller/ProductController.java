@@ -17,6 +17,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/products")
@@ -45,7 +46,10 @@ public class ProductController {
     public List<Product> getAllTheProducts(HttpServletRequest request) {
     	System.out.println(jwtService.extractUsername(request.getHeader("Authorization").substring(7)));//decode username from token
 //    	jwtService.
+    	
+    	Map<String, Object> extractClaims = jwtService.extractClaims(request.getHeader("Authorization").substring(7));
     	System.out.println("controll in all");
+    	System.out.println((String)extractClaims.get("lname"));
         return service.getProducts();
     }
 
@@ -67,6 +71,7 @@ public class ProductController {
         if (authentication.isAuthenticated()) {
             return jwtService.generateToken(authRequest.getUsername());
         } else {
+        	System.out.println("Thowed exception");
             throw new UsernameNotFoundException("invalid user request !");
         }
 

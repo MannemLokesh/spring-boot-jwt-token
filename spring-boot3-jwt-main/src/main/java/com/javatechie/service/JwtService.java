@@ -56,10 +56,12 @@ public class JwtService {
 
     public String generateToken(String userName){
         Map<String,Object> claims=new HashMap<>();
+        claims.put("lname", "Mannem");//Add additional information here
         return createToken(claims,userName);
     }
 
     private String createToken(Map<String, Object> claims, String userName) {
+    	
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(userName)
@@ -71,5 +73,13 @@ public class JwtService {
     private Key getSignKey() {
         byte[] keyBytes= Decoders.BASE64.decode(SECRET);
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+    
+    //Extraction of Claims
+    public Map<String, Object> extractClaims(String token) {
+        return Jwts.parser()
+                .setSigningKey(SECRET)
+                .parseClaimsJws(token)
+                .getBody();
     }
 }

@@ -1,6 +1,8 @@
 package com.javatechie.config;
 
 import com.javatechie.filter.JwtAuthFilter;
+import com.javatechie.filter.JwtAuthenticationEntryPoint;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,6 +30,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
     @Autowired
     private JwtAuthFilter authFilter;
+    
+    @Autowired
+    private JwtAuthenticationEntryPoint authenticationEntryPoint;
 
     @Bean
     //authentication
@@ -46,7 +51,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http.csrf().disable()
+        return http.csrf().disable().exceptionHandling().authenticationEntryPoint(authenticationEntryPoint).and()
                 .authorizeHttpRequests()
                 .requestMatchers("/products/new","/products/authenticate","/products/welcome").permitAll()
                 .and()
